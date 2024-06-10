@@ -30,7 +30,7 @@ namespace qsim {
  * or columns (n = 2^q, where q is the number of gate qubits).
  */
 template <typename fp_type>
-using Matrix = std::vector<fp_type>;
+using Matrix = std::vector<fp_type>; // Change to Kokkos::View
 
 /**
  * Sets all matrix elements to zero.
@@ -57,7 +57,7 @@ inline void MatrixIdentity(unsigned n, Matrix<fp_type>& m) {
   for (unsigned i = 0; i < n; ++i) {
     m[2 * (n * i + i)] = 1;
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Multiplies two gate matrices of equal size: m2 = m1 m2.
@@ -90,7 +90,7 @@ inline void MatrixMultiply(
       m2[2 * (n * i + j) + 1] = im;
     }
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Multiplies two gate matrices of equal size: m2 = m1^\dagger m2.
@@ -123,7 +123,7 @@ inline void MatrixDaggerMultiply(
       m2[2 * (n * i + j) + 1] = im;
     }
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Multiplies two gate matrices: m2 = m1 m2. The size of m1 should not exceed
@@ -169,7 +169,7 @@ inline void MatrixMultiply(unsigned mask1,
       }
     }
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Multiply a matrix by a real scalar value.
@@ -198,7 +198,7 @@ inline void MatrixScalarMultiply(
     m[2 * i + 0] = re * re0 - im * im0;
     m[2 * i + 1] = re * im0 + im * re0;
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Daggers a matrix.
@@ -217,7 +217,7 @@ inline void MatrixDagger(unsigned n, Matrix<fp_type>& m) {
       m[2 * (n * j + i) + 1] = -t;
     }
   }
-}
+} // Change to Kokkos parallel for
 
 /**
  * Gets a permutation to rearrange qubits from "normal" order to "gate"
@@ -237,8 +237,8 @@ inline std::vector<unsigned> NormalToGateOrderPermutation(
     if (qubits[i] < qubits[i - 1]) {
       normal_order = false;
       break;
-    }
-  }
+    } 
+  } 
 
   if (!normal_order) {
     struct QI {
@@ -265,7 +265,7 @@ inline std::vector<unsigned> NormalToGateOrderPermutation(
   }
 
   return perm;
-}
+} // Change to Kokkos parallel for
 
 /**
  * Shuffles the gate matrix elements to get the matrix that acts on qubits
@@ -276,7 +276,7 @@ inline std::vector<unsigned> NormalToGateOrderPermutation(
  */
 template <typename fp_type>
 inline void MatrixShuffle(const std::vector<unsigned>& perm,
-                          unsigned q, Matrix<fp_type>& m) {
+                          unsigned q, Matrix<fp_type>& m) { // change to kokkosview
   Matrix<fp_type> mt = m;
   unsigned n = unsigned{1} << q;
 
@@ -289,7 +289,7 @@ inline void MatrixShuffle(const std::vector<unsigned>& perm,
       m[2 * (n * i + j) + 1] = mt[2 * (n * pi + pj) + 1];
     }
   }
-}
+} // Change to Kokkos parallel for
 
 }  // namespace qsim
 

@@ -21,6 +21,14 @@
     using For = ParallelFor;
   }
 #else
+/*
+#elif  _KOKKOS
+# include "parfor_kokkos.h"
+  namespace qsim {
+    using For = ParallelForKokkos;
+  }
+#else
+*/
 # include "seqfor.h"
   namespace qsim {
     using For = SequentialFor;
